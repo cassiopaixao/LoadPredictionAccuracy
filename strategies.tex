@@ -1,0 +1,43 @@
+\section{Server Consolidation Strategies}
+\label{sec:server_consolidation_strategies}
+
+This section describes server consolidation strategies that are evaluated in this paper. We also discuss possible effects of inaccurate load predictions.
+
+\subsection{Basic strategies}
+
+We call basic strategies those heuristics that are usually considered to solve bin packing problems:
+
+\begin{itemize}
+	\item \textbf{First-Fit Decreasing:} Each virtual machine is allocated to the first physical machine that is able to fit virtual machine’s demand;
+	\item \textbf{Best-Fit Decreasing:} When resizing or moving a virtual machine to a physical server, select a server that can meet the virtual machine’s demand and that provides the least amount of available computing power after the virtual machine is deployed; and
+	\item \textbf{Worst-Fit Decreasing:} Contrary to Best-Fit, this heuristic selects the physical server that remains the highest amount of computing power.
+\end{itemize}
+
+
+\subsection{Khanna et al.~\cite{khanna2006application}}
+
+Khanna et al. proposed algorithms trying ``\emph{to resolve SLA violations by reallocating VMs to PMs, as needed}''.
+The proposed algorithm is reactive and is triggered to achieve two objectives: to resolve (or avoid) SLA violations and to turn off machines with low utilization.
+
+Before explaining the algorithm, we have to set some terms.
+Each virtual machine (VM) was represented as a $d$-dimensional vector where each dimension represents one of the resources, and the resource utilization of $VM_i$ at time $t$ is represented by $U_i(t)$.
+Each physical machine, $PM_j$, has a fixed capacity $C_j$ in a $d$-dimensional space. The $L_j(t)$ vector is the sum of $U_k(t)$, for all $VM_k$ allocated in the $PM_j$ at time $t$, and $R_j(t)$ is the residual capacity vector of the $j^{th}$ physical machine at time $t$. 
+In each $i^{th}$ dimension, the associated resource has a \emph{knee} value $n_i$, chosen as a superior limit of this resource utilization (if the utilization of this resource in one physical machine extrapolates this value, probably a SLA violation will occur).
+
+% need to rewrite this. It's exactaly how is written in the original paper. Need to explain the discrete time instances?
+! This dynamic algorithm runs at discrete time instances $t_0, t_1, \ldots$  to perform reallocation when triggered via a resource threshold violation alert. !
+
+An initial allocation state is provided, and the $d$ resources are monitored for each virtual and physical machine. The algorithm to migrate VMs from $PM_i$ is triggered when a resource utilization in the physical machine $PM_i$ reaches its \emph{knee} value, or when the $PM_i$ utilization falls below a low mark (all VMs allocated there are migrated in this case).
+
+\begin{enumerate}
+	\item ! Select the VM from $PM_i$ with the lowest utilization and move it to a physical machine which has the least residual capacity big enough to hold this VM !;
+	\begin{enumerate}
+		\item If no physical machine has big enough residual capacity to hold this VM, then instantiate a new physical machine and allocate the VM to that machine.
+	\end{enumerate}
+	\item If the SLA constraints aren't satisfied yet, repeat the first step until the constraints are satisfied;
+\end{enumerate}
+
+No strategy was showed to allocate new virtual machines, so we decided to use the same strategy presented to choose whose physical machine would host a virtual machine that has to be migrated.
+
+
+\subsection{Strategy 3}
