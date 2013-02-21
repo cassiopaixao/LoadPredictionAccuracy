@@ -5,16 +5,31 @@ This section describes server consolidation strategies that are evaluated in thi
 
 \subsection{Basic strategies}
 
-We call basic strategies those heuristics that are usually considered to solve bin packing problems:
+We call basic strategies those heuristics that are usually considered to solve bin packing problems. Given a set of virtual machines and a set of available physical machines:
 
 \begin{itemize}
-	\item \textbf{First-Fit Decreasing:} Each virtual machine is allocated to the first physical machine that is able to fit virtual machine’s demand;
-	\item \textbf{Best-Fit Decreasing:} When resizing or moving a virtual machine to a physical server, select a server that can meet the virtual machine’s demand and that provides the least amount of available computing power after the virtual machine is deployed; and
-	\item \textbf{Worst-Fit Decreasing:} Contrary to Best-Fit, this heuristic selects the physical server that remains the highest amount of computing power.
+	\item \textbf{First-Fit:}
+		each virtual machine is allocated to the first physical machine that is able to provide the resources demanded by the virtual machine;
+		
+	\item \textbf{Best-Fit:}
+		each virtual machine is allocated to the physical machine that can meet the virtual machine's demand and whose allocation results in the smallest residual capacity; and
+
+	\item \textbf{Worst-Fit:}
+		each virtual machine is allocated to the physical machine that can meet the virtual machine's demand and whose allocation results in the biggest residual capacity.
 \end{itemize}
 
+The algorithms search first for an already used physical machine, but if none of them could host the virtual machine, so one unused physical machine is selected (by the same constraints) to be ``powered up'' and to host the virtual machine.
 
-\subsection{Khanna et al.~\cite{khanna2006application}}
+In the simulations, we used the ``decreasing'' version of these strategies, i. e., First-Fit Decreasing, Best-Fit Decreasing and Worst-Fit Decreasing. In these versions, one step is added before the ordinary algorithm be executed: the virtual machines are decreasingly ordered (in a lexicographical order).
+
+\subsubsection*{Migration Control Strategies}
+
+While the virtual machines are running, their resources' demands can change or not. A migration control strategy is used to decide when a virtual machine should be migrated.
+Ferreto et al.~\cite{ferreto2011server} proposed a migration control strategy based on virtual machines' demands changes: if a virtual machine's demands change, so the virtual machine should be migrated.
+We added one more constraint in Ferreto et al.'s strategy and evaluated the following situation too: if a virtual machine's demands change in a way that can overload the physical machine, so the virtual machine should be migrated.
+
+
+\subsection{Khanna et al.~\cite{khanna2006application} strategy}
 
 Khanna et al. proposed algorithms trying ``\emph{to resolve SLA violations by reallocating VMs to PMs, as needed}''.
 The proposed algorithm is reactive and is triggered to achieve two objectives: to resolve (or avoid) SLA violations and to turn off machines with low utilization.
